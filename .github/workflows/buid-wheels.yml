@@ -1,0 +1,119 @@
+name: Build wheels
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  SQLITE_YEAR: 2024
+  SQLITE_VERSION: 3450100
+  SQLITE_VERSION_DOTTED: 3.45.1
+  SQLITE_HASH_SHA3_256: e311198775d5d5b2889d5fabe1d9a490567a14e605591d6a9e4c833804a8b4cb
+  PYSQLITE_VERSION: 0.5.2
+  PYSQLITE_URL: https://files.pythonhosted.org/packages/0e/37/33f0c3a77b0b8e34f09ddc3b997f18d5c7c7f5d8b86d2d555ad04ca2abb7/pysqlite3-0.5.2.tar.gz
+  PYSQLITE_HASH_SHA256: 0abc1756e8b39bd51c303e8fac37497ccaccc7b237c89fe3cf47ee8e614c590b
+
+jobs:
+  build_wheels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        include:
+          - python_version: cp311
+            libc_version: manylinux2014
+          - python_version: cp312
+            libc_version: manylinux_2_28
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Download SQLite3 source
+        run: |
+          curl --connect-timeout 5 --max-time 30 --location -o sqlite-amalgamation.zip 'https://www.sqlite.org/${{ env.SQLITE_YEAR }}/sqlite-amalgamation-${{ env.SQLITE_VERSION }}.zip'
+          sqlite3_dist_hash=`openssl dgst -sha3-256 -hex sqlite-amalgamation.zip | awk '{ print $NF; }'`
+          echo "computed hash: ${sqlite3_dist_hash}"
+          if [ x"${sqlite3_dist_hash}" != x"${{ env.SQLITE_HASH_SHA3_256 }}" ]; then
+            exit 1
+          else
+            exit 0
+          fi
+
+      - name: Download pysqlite3 source
+        run: |
+          curl --connect-timeout 5 --max-time 30 --location -o pysqlite3.tar.gz '${{ env.PYSQLITE_URL }}'
+          pysqlite3_dist_hash=`openssl dgst -sha256 -hex pysqlite3.tar.gz | awk '{ print $NF; }'`
+          echo "computed hash: ${pysqlite3_dist_hash}"
+          if [ x"${pysqlite3_dist_hash}" != x"${{ env.PYSQLITE_HASH_SHA256 }}" ]; then
+            exit 1
+          else
+            exit 0
+          fi
+
+      - name: Extract pysqlite3 source
+        run: tar -xzf pysqlite3.tar.gz
+
+      - name: Extract amalgamated SQLite3 source to pysqlite3 build tree
+        run: |
+          cd pysqlite3-${{ env.PYSQLITE_VERSION }}
+          unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
+
+      - name: Setup QEMU for aarch64
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v2.16.5
+        with:
+          package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
+        env:
+          CIBW_ARCHS_LINUX: aarch64
+          CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.libc_version }}
+          CIBW_BUILD: ${{ matrix.python_version }}-manylinux_aarch64
+          CIBW_BEFORE_BUILD_LINUX: >-
+            cd pysqlite3-${{ env.PYSQLITE_VERSION }};
+            env CFLAGS='-mcpu=neoverse-n1' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
+            strip build/*/pysqlite3/*.so
+          CIBW_BUILD_FRONTEND: 'pip'
+          CIBW_REPAIR_WHEEL_COMMAND: >-
+            wheel_full_path={wheel};
+            cd `dirname ${wheel_full_path}`;
+            wheel_filename=`basename ${wheel_full_path}`;
+            wheel_filename_dist=pysqlite3-${{ env.PYSQLITE_VERSION }}.nmu+sqlite${{ env.SQLITE_VERSION_DOTTED }}${wheel_filename#pysqlite3-${{ env.PYSQLITE_VERSION }}};
+            cp -p ${wheel_filename} {dest_dir}/${wheel_filename_dist%-linux_aarch64.whl}-${{ matrix.libc_version }}_aarch64.whl
+
+      - name: Upload materials as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-wheel-${{ matrix.python_version }}-linux_aarch64
+          path: wheelhouse/*.whl
+
+  publish_releases:
+    needs: build_wheels
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Prepare files for this release
+        run: |
+          echo 'wheels only. see README.md for sources.' > +WHEELS_ONLY--SEE_README_FOR_SOURCES
+
+      - name: Release wheels
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            */*.whl
+            +WHEELS_ONLY--SEE_README_FOR_SOURCES
