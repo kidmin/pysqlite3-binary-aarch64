@@ -15,7 +15,7 @@ env:
   PYSQLITE_HASH_SHA256: 0abc1756e8b39bd51c303e8fac37497ccaccc7b237c89fe3cf47ee8e614c590b
 
 jobs:
-  build_wheels:
+  build_wheels_aarch64:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -89,14 +89,22 @@ jobs:
             wheel_filename_dist=pysqlite3-${{ env.PYSQLITE_VERSION }}.nmu+sqlite${{ env.SQLITE_VERSION_DOTTED }}${wheel_filename#pysqlite3-${{ env.PYSQLITE_VERSION }}};
             cp -p ${wheel_filename} {dest_dir}/${wheel_filename_dist%-linux_aarch64.whl}-${{ matrix.libc_version }}_aarch64.whl
 
+      - name: Create layer zip archive
+        run: |
+          wheel_filename=`ls wheelhouse/*.whl`
+          mkdir -p layer/python
+          unzip -d layer/python ${wheel_filename}
+          cd layer
+          zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
+
       - name: Upload materials as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact-wheel-${{ matrix.python_version }}-linux_aarch64
-          path: wheelhouse/*.whl
+          path: wheelhouse/*
 
   publish_releases:
-    needs: build_wheels
+    needs: [build_wheels_aarch64]
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
@@ -112,8 +120,9 @@ jobs:
           echo 'wheels only. see README.md for sources.' > +WHEELS_ONLY--SEE_README_FOR_SOURCES
 
       - name: Release wheels
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             */*.whl
+            */*.zip
             +WHEELS_ONLY--SEE_README_FOR_SOURCES
