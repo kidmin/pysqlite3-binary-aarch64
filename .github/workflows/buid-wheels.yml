@@ -91,9 +91,10 @@ jobs:
 
       - name: Create layer zip archive
         run: |
-          wheel_filename=`ls wheelhouse/*.whl`
+          wheel_path=`ls wheelhouse/*.whl`
+          wheel_filename=`basename ${wheel_path}`
           mkdir -p layer/python
-          unzip -d layer/python ${wheel_filename}
+          unzip -d layer/python ${wheel_path}
           cd layer
           zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
 
