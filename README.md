@@ -10,6 +10,8 @@
 
 | Python version | arch                          | libc version     |
 | -------------- | ----------------------------- | ---------------- |
+| cp311          | x86\_64 (`-march=nehalem`)    | manylinux2014    |
 | cp311          | aarch64 (`-mcpu=neoverse-n1`) | manylinux2014    |
+| cp312          | x86\_64 (`-march=nehalem`)    | manylinux\_2\_28 |
 | cp312          | aarch64 (`-mcpu=neoverse-n1`) | manylinux\_2\_28 |
 
