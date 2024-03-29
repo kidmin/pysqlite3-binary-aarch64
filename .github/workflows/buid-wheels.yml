@@ -65,7 +65,7 @@ jobs:
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.16.5
+        uses: pypa/cibuildwheel@v2.17.0
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
@@ -154,7 +154,7 @@ jobs:
           platforms: arm64
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.16.5
+        uses: pypa/cibuildwheel@v2.17.0
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
