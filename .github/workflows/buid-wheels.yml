@@ -91,6 +91,7 @@ jobs:
           mkdir -p layer/python
           unzip -d layer/python ${wheel_path}
           cd layer
+          rm -rf python/*.dist-info
           zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
 
       - name: Upload materials as an artifact
@@ -180,6 +181,7 @@ jobs:
           mkdir -p layer/python
           unzip -d layer/python ${wheel_path}
           cd layer
+          rm -rf python/*.dist-info
           zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
 
       - name: Upload materials as an artifact
