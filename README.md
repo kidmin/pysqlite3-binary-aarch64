@@ -1,4 +1,4 @@
-# aarch64 wheels
+# aarch64 (arm64) / amd64 (x86\_64) wheels
 
 ## sources
 
