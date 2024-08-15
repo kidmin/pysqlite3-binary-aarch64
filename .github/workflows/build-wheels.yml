@@ -29,8 +29,8 @@ jobs:
             libc_version: manylinux2014
           - python_version: cp312
             libc_version: manylinux_2_28
-          - python_version: cp313
-            libc_version: manylinux_2_28
+#         - python_version: cp313
+#           libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
@@ -116,8 +116,8 @@ jobs:
             libc_version: manylinux2014
           - python_version: cp312
             libc_version: manylinux_2_28
-          - python_version: cp313
-            libc_version: manylinux_2_28
+#          - python_version: cp313
+#            libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
