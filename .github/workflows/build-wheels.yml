@@ -10,12 +10,12 @@ env:
   SQLITE_VERSION: 3460100
   SQLITE_VERSION_DOTTED: 3.46.1
   SQLITE_HASH_SHA3_256: af6aae8d3eccc608857c63cf56efbadc70da48b5c719446b353ed88dded1e288
-  PYSQLITE_VERSION: 0.5.3
-  PYSQLITE_URL: https://files.pythonhosted.org/packages/89/07/b9eb4647864581dcfe71c9d662c4067dc24970ab63f58ac7cef13dfd42e5/pysqlite3-0.5.3.tar.gz
-  PYSQLITE_HASH_SHA256: 54a98e05b087c2c064c8d5b58e9b8f403082eadf830d7d30ede4ecf6a5a5f143
+  PYSQLITE_VERSION: 0.5.4
+  PYSQLITE_URL: https://files.pythonhosted.org/packages/33/cb/ef7d041dbecfbf47f9241d7cb6328311fd80fe15bd61a6253d9ab36e9d6d/pysqlite3-0.5.4.tar.gz
+  PYSQLITE_HASH_SHA256: fbc69bfdc0cb43a5badd5403b126d5151371b5037e0397ba9802bb440c5b0021
 
 jobs:
-  build_wheels_amd64:
+  build_wheels_linux_amd64:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -29,8 +29,8 @@ jobs:
             libc_version: manylinux2014
           - python_version: cp312
             libc_version: manylinux_2_28
-#         - python_version: cp313
-#           libc_version: manylinux_2_28
+          - python_version: cp313
+            libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
@@ -75,6 +75,7 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.libc_version }}
           CIBW_BUILD: ${{ matrix.python_version }}-manylinux_x86_64
           CIBW_BEFORE_BUILD_LINUX: >-
+            pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
             env CFLAGS='-march=nehalem' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
             strip build/*/pysqlite3/*.so
@@ -102,7 +103,7 @@ jobs:
           name: artifact-wheel-${{ matrix.python_version }}-linux_x86_64
           path: wheelhouse/*
 
-  build_wheels_aarch64:
+  build_wheels_linux_aarch64:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -116,8 +117,8 @@ jobs:
             libc_version: manylinux2014
           - python_version: cp312
             libc_version: manylinux_2_28
-#          - python_version: cp313
-#            libc_version: manylinux_2_28
+          - python_version: cp313
+            libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
@@ -167,6 +168,7 @@ jobs:
           CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.libc_version }}
           CIBW_BUILD: ${{ matrix.python_version }}-manylinux_aarch64
           CIBW_BEFORE_BUILD_LINUX: >-
+            pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
             env CFLAGS='-mcpu=neoverse-n1' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
             strip build/*/pysqlite3/*.so
@@ -195,7 +197,7 @@ jobs:
           path: wheelhouse/*
 
   publish_releases:
-    needs: [build_wheels_amd64, build_wheels_aarch64]
+    needs: [build_wheels_linux_amd64, build_wheels_linux_aarch64]
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
