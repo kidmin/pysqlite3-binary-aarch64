@@ -104,7 +104,7 @@ jobs:
           path: wheelhouse/*
 
   build_wheels_linux_aarch64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
 
     permissions:
@@ -153,11 +153,6 @@ jobs:
         run: |
           cd pysqlite3-${{ env.PYSQLITE_VERSION }}
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
-
-      - name: Setup QEMU for aarch64
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
 
       - name: Build wheel
         uses: pypa/cibuildwheel@v2.22.0
