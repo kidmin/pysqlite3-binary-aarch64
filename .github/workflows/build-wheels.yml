@@ -77,7 +77,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: >-
             pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
-            env CFLAGS='-march=nehalem' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
+            env CFLAGS='-march=nehalem -O2' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
             strip build/*/pysqlite3/*.so
           CIBW_BUILD_FRONTEND: 'pip'
           CIBW_REPAIR_WHEEL_COMMAND: >-
@@ -165,7 +165,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: >-
             pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
-            env CFLAGS='-mcpu=neoverse-n1' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
+            env CFLAGS='-mcpu=neoverse-n1 -O2' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
             strip build/*/pysqlite3/*.so
           CIBW_BUILD_FRONTEND: 'pip'
           CIBW_REPAIR_WHEEL_COMMAND: >-
