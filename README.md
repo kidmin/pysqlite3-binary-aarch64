@@ -1,5 +1,9 @@
 # aarch64 (arm64) / amd64 (x86\_64) wheels
 
+## wheel/layer zip
+
+see [Releases](https://github.com/kidmin/pysqlite3-binary-aarch64/releases)
+
 ## sources
 
 * [SQLite source code](https://www.sqlite.org/download.html)
