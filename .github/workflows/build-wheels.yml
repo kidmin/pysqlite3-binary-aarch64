@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955  # v4.3.0
 
       - name: Download SQLite3 source
         run: |
@@ -67,7 +67,7 @@ jobs:
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.23.3
+        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a  # v2.23.3
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
@@ -97,7 +97,7 @@ jobs:
           zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
 
       - name: Upload materials as an artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: artifact-wheel-${{ matrix.python_version }}-linux_x86_64
           path: wheelhouse/*
@@ -121,7 +121,7 @@ jobs:
 
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955  # v4.3.0
 
       - name: Download SQLite3 source
         run: |
@@ -154,7 +154,7 @@ jobs:
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.23.3
+        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a  # v2.23.3
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
@@ -184,7 +184,7 @@ jobs:
           zip -r ../wheelhouse/layer-${wheel_filename%.whl}.zip python
 
       - name: Upload materials as an artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
           name: artifact-wheel-${{ matrix.python_version }}-linux_aarch64
           path: wheelhouse/*
@@ -199,14 +199,14 @@ jobs:
 
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
 
       - name: Prepare files for this release
         run: |
           echo 'wheels only. see README.md for sources.' > +WHEELS_ONLY--SEE_README_FOR_SOURCES
 
       - name: Release wheels
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836  # v2.3.3
         with:
           files: |
             */*.whl
