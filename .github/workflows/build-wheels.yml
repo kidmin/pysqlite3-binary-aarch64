@@ -31,6 +31,8 @@ jobs:
             libc_version: manylinux_2_28
           - python_version: cp313
             libc_version: manylinux_2_28
+          - python_version: cp314
+            libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
@@ -67,7 +69,7 @@ jobs:
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a  # v2.23.3
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc  # v3.3.0
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
@@ -118,6 +120,8 @@ jobs:
             libc_version: manylinux_2_28
           - python_version: cp313
             libc_version: manylinux_2_28
+          - python_version: cp314
+            libc_version: manylinux_2_28
 
     steps:
       - name: Checkout the repo
@@ -154,7 +158,7 @@ jobs:
           unzip -j ../sqlite-amalgamation.zip sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.c sqlite-amalgamation-${{ env.SQLITE_VERSION }}/sqlite3.h
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@faf86a6ed7efa889faf6996aa23820831055001a  # v2.23.3
+        uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc  # v3.3.0
         with:
           package-dir: pysqlite3-${{ env.PYSQLITE_VERSION }}
         env:
