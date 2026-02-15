@@ -76,8 +76,9 @@ jobs:
           CIBW_ARCHS_LINUX: x86_64
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.libc_version }}
           CIBW_BUILD: ${{ matrix.python_version }}-manylinux_x86_64
+          CIBW_BEFORE_ALL_LINUX: >-
+            pip3 install -U setuptools wheel
           CIBW_BEFORE_BUILD_LINUX: >-
-            pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
             sed -i -e "s/^VERSION = '${{ env.PYSQLITE_VERSION }}'/VERSION = '${{ env.PYSQLITE_VERSION }}+nmu.sqlite${{ env.SQLITE_VERSION_DOTTED }}'/" setup.py;
             env CFLAGS='-march=nehalem -O2' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
@@ -165,8 +166,9 @@ jobs:
           CIBW_ARCHS_LINUX: aarch64
           CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.libc_version }}
           CIBW_BUILD: ${{ matrix.python_version }}-manylinux_aarch64
+          CIBW_BEFORE_ALL_LINUX: >-
+            pip3 install -U setuptools wheel
           CIBW_BEFORE_BUILD_LINUX: >-
-            pip3 install -U setuptools wheel;
             cd pysqlite3-${{ env.PYSQLITE_VERSION }};
             sed -i -e "s/^VERSION = '${{ env.PYSQLITE_VERSION }}'/VERSION = '${{ env.PYSQLITE_VERSION }}+nmu.sqlite${{ env.SQLITE_VERSION_DOTTED }}'/" setup.py;
             env CFLAGS='-mcpu=neoverse-n1 -O2' LDFLAGS='-Wl,-z,now' python3 setup.py build_static &&
