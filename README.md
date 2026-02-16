@@ -1,5 +1,7 @@
 # aarch64 (arm64) / amd64 (x86\_64) wheels
 
+unofficial binary wheels
+
 ## wheel/layer zip
 
 see [Releases](https://github.com/kidmin/pysqlite3-binary-aarch64/releases)
@@ -20,4 +22,6 @@ see [Releases](https://github.com/kidmin/pysqlite3-binary-aarch64/releases)
 | cp312          | aarch64 (`-mcpu=neoverse-n1`) | manylinux\_2\_28 |
 | cp313          | x86\_64 (`-march=nehalem`)    | manylinux\_2\_28 |
 | cp313          | aarch64 (`-mcpu=neoverse-n1`) | manylinux\_2\_28 |
+| cp314          | x86\_64 (`-march=nehalem`)    | manylinux\_2\_28 |
+| cp314          | aarch64 (`-mcpu=neoverse-n1`) | manylinux\_2\_28 |
 
