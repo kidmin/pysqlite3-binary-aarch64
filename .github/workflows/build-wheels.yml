@@ -16,7 +16,7 @@ env:
 
 jobs:
   build_wheels_linux_amd64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     permissions:
@@ -195,7 +195,7 @@ jobs:
 
   publish_releases:
     needs: [build_wheels_linux_amd64, build_wheels_linux_aarch64]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 2
 
     permissions:
